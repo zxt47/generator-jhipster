@@ -60,6 +60,15 @@ module.exports = class extends BaseGenerator {
             defaults: false,
             description: 'Automatically configure Azure'
         });
+
+        // Automatically configure GitHub CI
+        this.argument('autoconfigure-github', {
+            type: Boolean,
+            defaults: false,
+            description: 'Automatically configure Github CI'
+        });
+
+        this.registerPrettierTransform();
     }
 
     get initializing() {
@@ -87,6 +96,7 @@ module.exports = class extends BaseGenerator {
                 this.autoconfigureJenkins = this.options['autoconfigure-jenkins'];
                 this.autoconfigureGitlab = this.options['autoconfigure-gitlab'];
                 this.autoconfigureAzure = this.options['autoconfigure-azure'];
+                this.autoconfigureGithub = this.options['autoconfigure-github'];
                 this.abort = false;
             },
             initConstants() {
@@ -149,6 +159,9 @@ module.exports = class extends BaseGenerator {
         }
         if (this.pipeline === 'azure') {
             this.template('azure-pipelines.yml.ejs', 'azure-pipelines.yml');
+        }
+        if (this.pipeline === 'github') {
+            this.template('github-ci.yml.ejs', '.github/workflows/github-ci.yml');
         }
 
         if (this.cicdIntegrations.includes('deploy')) {
